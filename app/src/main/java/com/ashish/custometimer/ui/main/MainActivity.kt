@@ -1,4 +1,4 @@
-package com.ashish.custometimer
+package com.ashish.custometimer.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -27,12 +27,4 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    CustomeTimerTheme {
-        Greeting("Android")
-    }
 }
