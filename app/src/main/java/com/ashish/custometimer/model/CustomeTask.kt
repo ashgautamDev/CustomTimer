@@ -1,12 +1,18 @@
 package com.ashish.custometimer.model
 
+import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 
 @Entity(tableName = "Custome Tasks")
 data class CustomeTask(
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = true)
+    val id: Long =  0,
+    @NonNull
     val title: String,
+    @NonNull
+    @TypeConverters(DataConverter::class)
     val instructions: Instruction
 ) {
     companion object {

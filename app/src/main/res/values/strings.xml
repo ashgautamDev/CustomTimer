@@ -4,4 +4,5 @@
     <string name="text_empty_wish_list">Your Custome Tasks is empty!</string>
     <string name="text_empty_explore">Create your first Custome Timer to beat Laziness</string>
     <string name="text_back_to_home">Lets Create Now</string>
+    <string name="add_screen_title">Add Custom Timer</string>
 </resources>

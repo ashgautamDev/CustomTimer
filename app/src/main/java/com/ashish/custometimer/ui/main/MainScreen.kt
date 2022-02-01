@@ -3,6 +3,7 @@ package com.ashish.custometimer.ui.main
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ashish.custometimer.model.CustomeTask
+import com.ashish.custometimer.navigation.Screens
 import com.ashish.custometimer.ui.component.AppFab
 import com.ashish.custometimer.ui.component.EmptyScreen
 import com.ashish.custometimer.utils.ViewState
@@ -52,9 +54,10 @@ fun MainScreen(viewModel: MainViewModel, navController: NavController) {
             }
         },
         floatingActionButton = {
-AppFab() {
+            AppFab() {
+                navController.navigate(Screens.Add.route)
 
-}
+            }
 
         },
         content = {
@@ -90,7 +93,7 @@ fun CustomeTaskContent(viewModel: MainViewModel, navController: NavController) {
                 ).show()
             }
             is ViewState.Success -> {
-                CustomeTasksList(result.task)
+                CustomeTasksList(result.task, navController)
             }
             is ViewState.Loading -> {
                 Toast.makeText(
@@ -105,13 +108,13 @@ fun CustomeTaskContent(viewModel: MainViewModel, navController: NavController) {
 
 @ExperimentalFoundationApi
 @Composable
-fun CustomeTasksList(task: List<CustomeTask>) {
+fun CustomeTasksList(task: List<CustomeTask>, navController: NavController) {
     LazyVerticalGrid(
         cells = GridCells.Fixed(2),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
     ) {
         items(task) { item ->
-            TaskCard(task = item)
+            TaskCard(task = item, navController)
             Spacer(modifier = Modifier.heightIn(10.dp))
         }
     }
@@ -135,13 +138,17 @@ fun CustomeTasksList(task: List<CustomeTask>) {
 }
 
 @Composable
-fun TaskCard(task: CustomeTask) {
+fun TaskCard(task: CustomeTask, navController: NavController) {
     Card(
-        modifier = Modifier.shadow(
-            elevation = 6.dp,
-            shape = RoundedCornerShape(16.dp),
-            clip = true
-        )
+        modifier = Modifier
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(16.dp),
+                clip = true
+            )
+            .clickable {
+                navController.navigate("${Screens.Start.route}/${task.id}")
+            }
     ) {
         Row(
             modifier = Modifier
