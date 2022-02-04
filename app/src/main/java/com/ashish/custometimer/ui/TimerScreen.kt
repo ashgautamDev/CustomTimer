@@ -108,15 +108,14 @@ fun TimerContent(customeTask : CustomeTask , context : Context) {
 
         )
         Spacer(modifier = Modifier.height(32.dp))
-        SubTaskTimer(number) {
-        }
+        SubTaskTimer(number)
 
 
     }
 }
 
 @Composable
-fun SubTaskTimer(taskTime: Int, onTimerEnd: () -> Unit) {
+fun SubTaskTimer(taskTime: Int) {
 
     Box(
         modifier = Modifier
@@ -134,7 +133,4 @@ fun SubTaskTimer(taskTime: Int, onTimerEnd: () -> Unit) {
 
 }
 
-suspend fun startTimer(time: Long, onTimerEnd: () -> Unit) {
-    delay(timeMillis = time)
-    onTimerEnd()
-}
+

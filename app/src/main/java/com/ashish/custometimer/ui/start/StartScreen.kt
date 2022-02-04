@@ -48,7 +48,7 @@ fun StartScreen(viewModel: MainViewModel, navController: NavHostController, id :
                 }
                 is TaskState.Success -> {
                    StartContent(customeTask = result.task) {
-                       navController.navigate("${Screens.Timer.route}/{$id}")
+                       navController.navigate("${Screens.Timer.route}/$id")
                    }
                 }
                 is TaskState.Loading -> {
