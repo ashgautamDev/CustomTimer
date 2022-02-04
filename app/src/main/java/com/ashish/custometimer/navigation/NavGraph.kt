@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ashish.custometimer.ui.TimerScreen
 import com.ashish.custometimer.ui.add.AddScreen
 import com.ashish.custometimer.ui.main.MainScreen
 import com.ashish.custometimer.ui.main.MainViewModel
@@ -35,17 +36,33 @@ fun NavGraph() {
             )
             AddScreen(viewModel, navController)
         }
-
         composable(
-            "${Screens.Start.route}/{id}",
-            arguments = listOf(navArgument("id") {
-                type = NavType.IntType
+            "${Screens.Start.route}/{tId}",
+            arguments = listOf(navArgument("tId") {
+                type = NavType.StringType
             })
         ) {
             val viewModel: MainViewModel = viewModel(
                 factory = HiltViewModelFactory(LocalContext.current, it)
             )
-            StartScreen(viewModel, navController, it.arguments?.getInt("id") ?: "".toInt())
+            StartScreen(viewModel, navController, it.arguments?.getString("tId") ?: "")
+
+
+        }
+
+        composable(
+            "${Screens.Timer.route}/{sId}",
+            arguments = listOf(navArgument("sId") {
+                type = NavType.StringType
+            })
+        ) {
+            val viewModel: MainViewModel = viewModel(
+                factory = HiltViewModelFactory(LocalContext.current, it)
+            )
+            val s = it.arguments?.getString("sId")
+            if (s != null) {
+                TimerScreen(viewModel, navController, s )
+            }
 
 
         }

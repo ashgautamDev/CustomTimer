@@ -1,35 +1,39 @@
 package com.ashish.custometimer.model
 
-import androidx.annotation.NonNull
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import androidx.room.*
+import org.jetbrains.annotations.NotNull
 
 @Entity(tableName = "Custome Tasks")
 data class CustomeTask(
     @PrimaryKey(autoGenerate = true)
-    val id: Long =  0,
-    @NonNull
-    val title: String,
-    @NonNull
+    @NotNull
+    var pid: Long? = null,
+    @ColumnInfo(name="CustomTaskTimer")
+    var title: String = "",
+
     @TypeConverters(DataConverter::class)
-    val instructions: Instruction
+    @Ignore
+    @NotNull
+    @Embedded
+    @ColumnInfo(name = "TasksLists")
+    var tasks: List<Task>  = emptyList()
 ) {
     companion object {
         private val tasks = listOf(
-            Task("Skipping", 30),
-            Task("Break", 10),
-            Task("Skipping High", 30),
-            Task("Break", 10),
-            Task("PushUps", 30),
-            Task("Break", 20),
+            Task("Skipping", "5"),
+            Task("Break", "3"),
+            Task("Skipping High", "5"),
+            Task("Break", "3"),
+            Task("PushUps", "5"),
+            Task("Break", "2"),
         )
-        private val instr = Instruction(tasks)
+
 
         fun mock() = CustomeTask(
-            id = 0,
+            pid = 0,
             title = "Workout",
-            instructions = instr
+            tasks = tasks
         )
     }
+
 }

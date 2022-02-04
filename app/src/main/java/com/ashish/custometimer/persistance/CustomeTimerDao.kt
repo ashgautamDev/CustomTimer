@@ -13,10 +13,10 @@ interface CustomeTaskDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCustomeTask(customeTask: CustomeTask)
 
-    @Query("SELECT * FROM `Custome Tasks` WHERE id = :id_")
+    @Query("SELECT * FROM `Custome Tasks` WHERE pid = :id_")
     fun getCustomeTask(id_: Long): Flow<CustomeTask>
 
-    @Query("SELECT * FROM `Custome tasks` ORDER BY id DESC")
+    @Query("SELECT * FROM `Custome tasks` ORDER BY pid DESC")
     fun getCustomeTaskList(): Flow<List<CustomeTask>>
 
 

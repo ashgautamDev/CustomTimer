@@ -10,26 +10,27 @@ import java.lang.reflect.Type
 class DataConverter {
 
 
-    @TypeConverter // note this annotation
-    fun fromOptionValuesList(tasks: List<CustomeTask>?): String? {
+    @TypeConverter
+    fun fromTasksList(tasks: List<Task>?): String? {
         if (tasks == null) {
             return null
         }
         val gson = Gson()
         val type: Type = object :
-            TypeToken<List<CustomeTask>?>() {}.type
+            TypeToken<List<Task>?>() {
+
+        }.type
         return gson.toJson(tasks, type)
     }
 
-
-    @TypeConverter // note this annotation
-    fun toOptionValuesList(tasks: String?): List<CustomeTask>? {
+    @TypeConverter
+    fun toTasksList(tasks: String?): List<Task>? {
         if (tasks == null) {
             return null
         }
         val gson = Gson()
         val type = object :
-            TypeToken<List<CustomeTask>?>() {}.type
+            TypeToken<List<Task>?>() {}.type
         return gson.fromJson(tasks, type)
     }
 }
