@@ -72,10 +72,10 @@ fun TimerContent(customeTask : CustomeTask , context : Context) {
         mutableStateOf(0)
     }
     var number by remember {
-        mutableStateOf(customeTask.tasks[index].taskTime.toInt())
+        mutableStateOf(customeTask.instructTasks[index].taskTime.toInt())
     }
     var instTitle by remember {
-        mutableStateOf(customeTask.tasks[index].taskTitle)
+        mutableStateOf(customeTask.instructTasks[index].taskTitle)
     }
     val sound : MediaPlayer = MediaPlayer.create(context , R.raw.whistle )
 
@@ -86,7 +86,7 @@ fun TimerContent(customeTask : CustomeTask , context : Context) {
     ) {
         LaunchedEffect(key1 = Unit) {
         try {
-          for (tasks in customeTask.tasks){
+          for (tasks in customeTask.instructTasks){
               delay(2000L)
               instTitle = tasks.taskTitle
               for (num in tasks.taskTime.toInt() downTo 0){

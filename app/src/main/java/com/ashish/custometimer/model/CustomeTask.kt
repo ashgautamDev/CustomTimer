@@ -1,9 +1,12 @@
 package com.ashish.custometimer.model
 
 import androidx.room.*
+import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 import org.jetbrains.annotations.NotNull
 
 @Entity(tableName = "Custome Tasks")
+@Serializable
 data class CustomeTask(
     @PrimaryKey(autoGenerate = true)
     @NotNull
@@ -12,11 +15,9 @@ data class CustomeTask(
     var title: String = "",
 
     @TypeConverters(DataConverter::class)
-    @Ignore
     @NotNull
-    @Embedded
-    @ColumnInfo(name = "TasksLists")
-    var tasks: List<Task>  = emptyList()
+    @ColumnInfo(name = "TaskList")
+    var instructTasks: List<Task> = emptyList()
 ) {
     companion object {
         private val tasks = listOf(
@@ -32,7 +33,7 @@ data class CustomeTask(
         fun mock() = CustomeTask(
             pid = 0,
             title = "Workout",
-            tasks = tasks
+            instructTasks = tasks
         )
     }
 

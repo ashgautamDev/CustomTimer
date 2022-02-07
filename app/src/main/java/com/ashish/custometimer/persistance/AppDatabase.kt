@@ -8,7 +8,7 @@ import com.ashish.custometimer.model.CustomeTask
 import com.ashish.custometimer.model.DataConverter
 
 
-@Database(entities = [CustomeTask::class] , version = 2 , exportSchema = false)
+@Database(entities = [CustomeTask::class] , version = 3 , exportSchema = false)
 @TypeConverters(DataConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

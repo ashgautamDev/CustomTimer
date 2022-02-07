@@ -9,7 +9,7 @@ fun main(){
 fun calculateTime(customeTask: CustomeTask): Int {
     var time = 0
     val totalTime = mutableStateListOf<Int>()
-    val taskList = customeTask.tasks.listIterator()
+    val taskList = customeTask.instructTasks.listIterator()
     taskList.forEach {
         it.taskTime.let { it1 -> totalTime.add(it1.toInt()) }
     }
