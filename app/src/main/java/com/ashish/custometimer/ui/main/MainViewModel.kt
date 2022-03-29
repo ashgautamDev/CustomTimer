@@ -27,6 +27,16 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
             repository.insertCustomeTask(customeTask)
         }
 
+    fun deleteCustomeTask(customeTask: CustomeTask) =
+        viewModelScope.launch {
+            repository.deleteCustomeTask(customeTask)
+        }
+    fun deleteAllCustomeTask(){
+        viewModelScope.launch {
+            repository.deleteAllCustomTask()
+        }
+    }
+
     fun getCustomeTask(id: Long) = viewModelScope.launch {
         repository.getCustomeTask(id).collect { task ->
             _taskState.value = TaskState.Success(task)

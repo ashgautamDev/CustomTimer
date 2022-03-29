@@ -2,25 +2,30 @@ package com.ashish.custometimer.ui.add
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Title
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.focusOrder
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
@@ -32,7 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -43,66 +47,92 @@ import com.ashish.custometimer.model.CustomeTask
 import com.ashish.custometimer.model.Task
 import com.ashish.custometimer.navigation.Screens
 import com.ashish.custometimer.ui.component.AddTopBar
+import com.ashish.custometimer.ui.component.TimePickerDialog
 import com.ashish.custometimer.ui.main.MainViewModel
+import com.ashish.custometimer.utils.calculateSec
+import com.ashish.custometimer.utils.statusText
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun AddScreen(viewModel: MainViewModel, navController: NavController) {
+fun AddScreen(
+    mainViewModel: MainViewModel,
+    addViewModel: AddViewModel,
+    navController: NavController
+) {
 
     val context = LocalContext.current
+
     var title by remember {
         mutableStateOf("")
     }
     var instructTitle by remember {
         mutableStateOf("")
     }
-    var time by remember {
-        mutableStateOf("")
+    var minute by remember {
+        mutableStateOf(0)
     }
+    var sec by remember {
+        mutableStateOf(0)
+    }
+    val timePicked = addViewModel.time.observeAsState()
     val tasks = remember {
         mutableStateListOf<Task>()
     }
     val focusManager = LocalFocusManager.current
+    var instructionMessage = statusText(title, tasks, Task(instructTitle, sec.toString()))
+    if (tasks.size > 0) instructionMessage = "Add more instructions"
 
+    val showDialogState: Boolean = addViewModel.showDialog.collectAsState().value
+    TimePickerDialog(
+        open = showDialogState,
+        min = {
+            minute = it
+        },
+        sec = {
+            sec = it
+
+        },
+        onConfirm = { addViewModel.onDialogConfirm() },
+        onDismiss = { addViewModel.onDialogDismiss() })
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        //topApp Bar
         AddTopBar(
             context = context,
             onCrossClick = { navController.navigate(Screens.Main.route) }) {
 
-            if ( tasks.size != 0) {
-                if(title.isNotBlank()){
-                viewModel.insertCustomeTask(
-                    CustomeTask(
-                        title = title,
-                        instructTasks = tasks
+            if (tasks.size != 0) {
+                if (title.isNotBlank()) {
+                    mainViewModel.insertCustomeTask(
+                        CustomeTask(
+                            title = title,
+                            instructTasks = tasks
+                        )
                     )
-                )
-                navController.navigate(Screens.Main.route)}
-                else {
-                    Toast.makeText(context, "Please Add Title for Tasks ", Toast.LENGTH_SHORT).show()
+                    navController.navigate(Screens.Main.route)
+                } else {
+                    Toast.makeText(context, "Please Add Title for Tasks ", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
-            }else {
+            } else {
                 Toast.makeText(context, "Please Add Subtask", Toast.LENGTH_SHORT).show()
             }
-
 
 
         }
 
         //Title Text Box
-        OutlinedTextField(
+        TextField(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1F)
                 .onPreviewKeyEvent {
-                    if (it.key.keyCode == Key.Tab.keyCode){
+                    if (it.key.keyCode == Key.Tab.keyCode) {
                         focusManager.moveFocus(FocusDirection.Down)
                         true
                     } else {
@@ -111,164 +141,147 @@ fun AddScreen(viewModel: MainViewModel, navController: NavController) {
                 },
             value = title,
             leadingIcon = {
-                Image(imageVector = Icons.Default.Title, contentDescription = "")
+                Image(
+                    imageVector = Icons.Default.Title,
+                    contentDescription = "",
+                    modifier = Modifier.size(32.dp)
+                )
 
             },
             textStyle = TextStyle(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start,
-                textDirection = TextDirection.Content,
-                textDecoration = TextDecoration.Underline
+                textDirection = TextDirection.Content
             ),
             onValueChange = { title = it },
-            shape = RoundedCornerShape(16.dp),
             singleLine = true,
             placeholder = {
                 Text(
-                    text = stringResource(R.string.add_screen_title_place_holder),
+                    color = MaterialTheme.colors.background.copy(alpha = .5f),
+                    text = stringResource(R.string.title_place_holder),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.SemiBold
                 )
 
-            } ,  keyboardOptions = KeyboardOptions(
+            },
+            keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
 
-                ) ,
+                ),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
             )
 
 
         )
-        TaskListContainer(tasks)
+        Divider(
+            modifier = Modifier.background(
+                color = MaterialTheme.colors.onSecondary.copy(
+                    alpha = .8f
+                )
+            )
+        )
+        TaskListContainer(tasks, modifier = Modifier.weight(5F), title)
 
 
-        //Instruction
-        Row(modifier = Modifier.fillMaxWidth() , horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            Text(text = instructionMessage, fontSize = 18.sp, fontWeight = FontWeight.Light)
+            if (instructTitle.isNotBlank() && sec != 0) {
+                Image(imageVector = Icons.Default.Done,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .weight(1F)
+                        .clickable {
+                            tasks.add(Task(instructTitle, calculateSec(minute, sec)))
+                            instructTitle = ""
+                            sec = 0
+                            minute = 0
 
-            OutlinedTextField(
-                modifier = Modifier
-                    .onPreviewKeyEvent {
-                        if (it.key == Key.Tab){
-                            focusManager.moveFocus(FocusDirection.Down)
-                            true
-                        } else {
-                            false
-                        }
-                    }
-                    .width(250.dp)
-                    .height(58.dp)
-                    .focusOrder { FocusDirection.Next },
+                        })
+
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(2.dp)
+                .height(58.dp)
+                .background(
+                    color = MaterialTheme.colors.surface,
+                    shape = MaterialTheme.shapes.small
+                ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.background),
+                imageVector = Icons.Outlined.Circle,
+                contentDescription = "",
+                modifier = Modifier.weight(1F)
+            )
+            BasicTextField(
                 value = instructTitle,
-                leadingIcon = {
-                    Image(imageVector = Icons.Outlined.Circle, contentDescription = "")
-
-                },
-                textStyle = TextStyle(
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
-                ),
                 onValueChange = { instructTitle = it },
-                shape = RoundedCornerShape(32.dp),
-                singleLine = true, placeholder = {
-                    Text(
-                        text = stringResource(R.string.add_screen_title_place_holder),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-
-                }
-            ,  keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next,
-
-                    ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        if (subTaskEmptyCondition(instructTitle , time)) {
-                            tasks.add(Task(instructTitle, time))
-                            instructTitle = ""
-                            time = ""
-                        }
-
-                        focusManager.moveFocus(FocusDirection.Next)
-
-
-                    }
-                ,
-                )
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-
-            OutlinedTextField(
-                modifier = Modifier
-                    .onPreviewKeyEvent {
-                        if (it.key == Key.Tab){
-                            focusManager.moveFocus(FocusDirection.Down)
-                            true
-                        } else {
-                            false
-                        }
-                    }
-                    .size(58.dp),
-                value = time,
+                modifier = Modifier.weight(4F),
                 textStyle = TextStyle(
-                    fontSize = 22.sp,
                     fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colors.onSurface
                 ),
-                onValueChange = { time = it },
-                placeholder = {
-                    Image(imageVector = Icons.Default.Timer, contentDescription = "")
-                },
-                shape = RoundedCornerShape(32.dp),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
+                singleLine = true, keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done,
-
-                    ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        if (subTaskEmptyCondition(instructTitle , time)) {
-                            tasks.add(Task(instructTitle, time))
-                            instructTitle = ""
-                            time = ""
-                            focusManager.moveFocus(FocusDirection.Previous)
-                        }else {
-                            Toast.makeText(context, "Please Add both field", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                )
+                ), keyboardActions = KeyboardActions()
             )
+            if (!(instructTitle.isBlank())) {
+                Image(colorFilter = ColorFilter.tint(color = MaterialTheme.colors.background),
+                    imageVector = Icons.Default.Timer,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(32.dp)
+                        .weight(1F)
+                        .clickable {
+                            addViewModel.onOpenDialogClicked()
+                        })
 
-
+            }
         }
 
     }
-
-
 }
 
-
 @Composable
-fun TaskListContainer(tasks: List<Task>) {
-
-    LazyColumn(
-        modifier = Modifier.padding(
-            32.dp
-        )
+fun TaskListContainer(tasks: List<Task>, modifier: Modifier, title: String) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+            .background(
+                color = MaterialTheme.colors.secondary.copy(alpha = 0.2f),
+                shape = MaterialTheme.shapes.small
+            )
     ) {
+        LazyColumn(
+            modifier = Modifier.padding(
+                16.dp
+            )
+        ) {
+            item {
+                Text(text = if (title.isNotEmpty()) "$title instructions" else "Your instructions")
+            }
+            items(tasks) { it ->
+                TaskCardBasic(it)
+            }
 
-        items(tasks) { it ->
-            TaskCardBasic(it)
+
         }
-
-
     }
+
 
 }
 
@@ -298,9 +311,5 @@ fun TaskCardBasic(task: Task) {
         )
     }
 
-}
-fun subTaskEmptyCondition(title : String , time : String) : Boolean
-{
-    return !(title.isBlank() || time.isBlank() || time.contentEquals(Int.toString()))
 }
 

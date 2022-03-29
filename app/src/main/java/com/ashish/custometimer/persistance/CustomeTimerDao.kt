@@ -1,9 +1,6 @@
 package com.ashish.custometimer.persistance
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.ashish.custometimer.model.CustomeTask
 import kotlinx.coroutines.flow.Flow
 
@@ -19,5 +16,10 @@ interface CustomeTaskDao {
     @Query("SELECT * FROM `Custome tasks` ORDER BY pid DESC")
     fun getCustomeTaskList(): Flow<List<CustomeTask>>
 
+    @Delete
+    suspend fun deleteTasks(customeTask: CustomeTask)
+
+    @Query("DELETE FROM `Custome tasks`")
+    fun deleteAllTask()
 
 }

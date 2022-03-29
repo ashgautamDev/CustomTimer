@@ -22,6 +22,7 @@ import com.ashish.custometimer.navigation.Screens
 import com.ashish.custometimer.ui.component.EmptyScreen
 import com.ashish.custometimer.ui.main.CustomeTasksList
 import com.ashish.custometimer.ui.main.MainViewModel
+import com.ashish.custometimer.ui.theme.MaximumBlue
 import com.ashish.custometimer.utils.TaskState
 import com.ashish.custometimer.utils.ViewState
 import com.ashish.custometimer.utils.calculateTime
@@ -32,7 +33,6 @@ fun StartScreen(viewModel: MainViewModel, navController: NavHostController, id :
     val context = LocalContext.current
     viewModel.getCustomeTask(id.toLong())
     Scaffold(
-        topBar = { },
         content = {
             //Observe Tasks
             when (val result = viewModel.taskState.collectAsState().value) {
@@ -52,17 +52,13 @@ fun StartScreen(viewModel: MainViewModel, navController: NavHostController, id :
                    }
                 }
                 is TaskState.Loading -> {
-                    Toast.makeText(
-                        context,
-                        "Task is Loading Please Wait duh ",
-                        Toast.LENGTH_SHORT
-                    ).show()
+
                 }
             }
 
 
         },
-        modifier = Modifier.background(color = MaterialTheme.colors.background)
+        modifier = Modifier.background(color = MaximumBlue)
     )
 
 
@@ -76,16 +72,20 @@ fun StartContent(customeTask: CustomeTask  , onStartClick : ()-> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxSize()
     ) {
         Text(text = customeTask.title, fontSize = 36.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(20.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+        Spacer(modifier = Modifier.height(40.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp) , verticalAlignment = Alignment.Bottom) {
 
-            Text(text = totalTime.toString(), fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+            Text(text = "Total Time $totalTime ", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
             Text(text = timeUnit, fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
 
         }
+        Spacer(modifier = Modifier.height(20.dp))
+
+
+
 
         Box(
             modifier = Modifier
@@ -95,13 +95,13 @@ fun StartContent(customeTask: CustomeTask  , onStartClick : ()-> Unit) {
                 }
                 .shadow(elevation = 0.dp, shape = CircleShape)
                 .border(
-                    border = BorderStroke(6.dp, color = MaterialTheme.colors.onBackground),
+                    border = BorderStroke(6.dp, color = MaterialTheme.colors.primary),
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center
         ) {
 
-            Text(text = "Start", fontSize = 48.sp, fontWeight = FontWeight.ExtraBold)
+            Text(text = "Start", fontSize = 48.sp, fontWeight = FontWeight.ExtraBold , color = MaterialTheme.colors.primary)
 
         }
 

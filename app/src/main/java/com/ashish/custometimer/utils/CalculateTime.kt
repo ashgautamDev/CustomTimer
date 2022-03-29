@@ -18,3 +18,9 @@ fun calculateTime(customeTask: CustomeTask): Int {
     }
     return time
 }
+
+fun calculateSec(minute : Int , Second : Int ) : String {
+    val sec =  minute*60 + Second
+    return sec.toString()
+}
+

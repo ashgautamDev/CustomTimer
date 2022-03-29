@@ -16,12 +16,11 @@ import androidx.compose.ui.unit.dp
 fun AppFab(icon: ImageVector = Icons.Default.AddCircle, onClick: () -> Unit) {
     Image(
         colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary),
-        imageVector = icon.apply { tintColor.blue },
+        imageVector = icon.apply { MaterialTheme.colors.onPrimary },
         contentDescription = null,
         modifier = Modifier
-            .size(66.dp)
+            .size(60.dp)
             .clickable {
                 onClick()
-            },
-        alpha = .8f)
+            })
 }

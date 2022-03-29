@@ -16,7 +16,14 @@ class MainRepository @Inject constructor(
   fun getCustomeTask(id: Long): Flow<CustomeTask> =
         customeTaskDao.getCustomeTask(id)
 
+    suspend fun deleteCustomeTask(customeTask: CustomeTask) =
+        customeTaskDao.deleteTasks(customeTask)
+
     suspend fun insertCustomeTask(customeTask: CustomeTask) =
         customeTaskDao.insertCustomeTask(customeTask)
+
+    fun deleteAllCustomTask(){
+        customeTaskDao.deleteAllTask()
+    }
 
 }

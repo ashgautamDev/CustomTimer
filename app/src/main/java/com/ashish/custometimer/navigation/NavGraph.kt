@@ -12,8 +12,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ashish.custometimer.ui.TimerScreen
 import com.ashish.custometimer.ui.add.AddScreen
+import com.ashish.custometimer.ui.add.AddViewModel
 import com.ashish.custometimer.ui.main.MainScreen
 import com.ashish.custometimer.ui.main.MainViewModel
+import com.ashish.custometimer.ui.onboarding.OnboardingScreen
 import com.ashish.custometimer.ui.start.StartScreen
 
 @ExperimentalFoundationApi
@@ -22,7 +24,10 @@ fun NavGraph() {
 
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Screens.Main.route) {
+    NavHost(navController = navController, startDestination = Screens.Onboarding.route) {
+        composable(Screens.Onboarding.route){
+            OnboardingScreen(navController)
+        }
         composable(Screens.Main.route) {
 
             val viewModel: MainViewModel = viewModel(
@@ -34,7 +39,10 @@ fun NavGraph() {
             val viewModel: MainViewModel = viewModel(
                 factory = HiltViewModelFactory(LocalContext.current, it)
             )
-            AddScreen(viewModel, navController)
+            val addViewModel: AddViewModel = viewModel(
+                factory = HiltViewModelFactory(LocalContext.current, it)
+            )
+            AddScreen(viewModel, addViewModel, navController)
         }
         composable(
             "${Screens.Start.route}/{tId}",
@@ -61,7 +69,7 @@ fun NavGraph() {
             )
             val s = it.arguments?.getString("sId")
             if (s != null) {
-                TimerScreen(viewModel, navController, s )
+                TimerScreen(viewModel, navController, s)
             }
 
 

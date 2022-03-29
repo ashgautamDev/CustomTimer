@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">Custome Timer</string>
+    <string name="app_name">Custimer</string>
 
     <string name="text_empty_wish_list">Your Custome Tasks is empty!</string>
     <string name="text_empty_explore">Create your first Custome Timer to beat Laziness</string>
     <string name="text_back_to_home">Lets Create Now</string>
-    <string name="add_screen_title">Add Custom Timer</string>
-    <string name="add_screen_title_place_holder">Title for your Sub Task</string>
+    <string name="add_screen_title">Add Custom Task</string>
+    <string name="title_place_holder">Title for your task</string>
+    <string name="sub_title_place_holder">Your instruction</string>
 </resources>
